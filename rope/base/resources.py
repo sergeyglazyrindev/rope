@@ -131,6 +131,10 @@ class File(Resource):
         self.parent.create_file(self.name)
 
 
+def create_fscommands_handler():
+    return fscommands.FileSystemCommands()
+
+
 class Folder(Resource):
     """Represents a folder"""
 
@@ -191,6 +195,31 @@ class Folder(Resource):
     def get_folders(self):
         return [resource for resource in self.get_children()
                 if resource.is_folder()]
+
+    def get_folders_with_python_files(self):
+        fscommands_inst = create_fscommands_handler()
+        found_folders = fscommands_inst.get_folders_with_python_files(self.real_path)
+        folders = []
+        for folder in found_folders:
+            child = self.get_child(folder)
+            folders.append(child)
+        return folders
+
+    def get_python_files_and_folders_only_with_python_files(self):
+        fscommands_inst = create_fscommands_handler()
+        found_resource_paths = fscommands_inst.get_python_files_and_folders_only_with_python_files(self.real_path)
+        resources = []
+        for resource_path in found_resource_paths:
+            resources.append(self.get_child(resource_path))
+        return resources
+
+    def does_contain_python_package(self):
+        fscommands_inst = create_fscommands_handler()
+        return fscommands_inst.does_folder_contain_python_package(self.real_path)
+
+    def does_contain_any_python_file(self):
+        fscommands_inst = create_fscommands_handler()
+        return fscommands_inst.does_folder_contain_any_python_file(self.real_path)
 
     def contains(self, resource):
         if self == resource:

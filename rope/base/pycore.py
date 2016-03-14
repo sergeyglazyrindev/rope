@@ -146,23 +146,14 @@ class PyCore(object):
         """Returns all python files available in the project"""
         return self.project.get_python_files()
 
-    def _is_package(self, folder):
-        if folder.has_child('__init__.py') and \
-           not folder.get_child('__init__.py').is_folder():
-            return True
-        else:
-            return False
-
     def _find_source_folders(self, folder):
-        for resource in folder.get_folders():
-            if self._is_package(resource):
-                return [folder]
+        if folder.does_contain_python_package():
+            return [folder]
+
         result = []
-        for resource in folder.get_files():
-            if resource.name.endswith('.py'):
-                result.append(folder)
-                break
-        for resource in folder.get_folders():
+        if folder.does_contain_any_python_file():
+            result.append(folder)
+        for resource in folder.get_folders_with_python_files():
             result.extend(self._find_source_folders(resource))
         return result
 

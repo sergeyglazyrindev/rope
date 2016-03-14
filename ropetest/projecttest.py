@@ -25,8 +25,8 @@ class ProjectTest(unittest.TestCase):
         self.no_project = NoProject()
 
     def _make_sample_project(self):
-        self.sample_file = 'sample_file.txt'
-        self.sample_path = os.path.join(self.project_root, 'sample_file.txt')
+        self.sample_file = 'sample_file.py'
+        self.sample_path = os.path.join(self.project_root, 'sample_file.py')
         if not os.path.exists(self.project_root):
             os.mkdir(self.project_root)
         self.sample_folder = 'sample_folder'
@@ -61,7 +61,7 @@ class ProjectTest(unittest.TestCase):
         self.assertEquals('another text\n', project_file.read())
 
     def test_creating_files(self):
-        project_file = 'newfile.txt'
+        project_file = 'newfile.py'
         self.project.root.create_file(project_file)
         newFile = self.project.get_resource(project_file)
         self.assertTrue(newFile is not None)
@@ -108,7 +108,7 @@ class ProjectTest(unittest.TestCase):
 
     def test_creating_file_inside_folder(self):
         folder_name = 'sampleFolder'
-        file_name = 'sample2.txt'
+        file_name = 'sample2.py'
         file_path = folder_name + '/' + file_name
         parent_folder = self.project.root.create_folder(folder_name)
         parent_folder.create_file(file_name)
@@ -121,7 +121,7 @@ class ProjectTest(unittest.TestCase):
 
     def test_failing_when_creating_file_inside_non_existent_folder(self):
         with self.assertRaises(ResourceNotFoundError):
-            self.project.root.create_file('NonexistentFolder/SomeFile.txt')
+            self.project.root.create_file('NonexistentFolder/SomeFile.py')
 
     def test_nested_directories(self):
         folder_name = 'SampleFolder'
@@ -139,9 +139,9 @@ class ProjectTest(unittest.TestCase):
 
     def test_removing_files_invalidating_in_project_resource_pool(self):
         root_folder = self.project.root
-        my_file = root_folder.create_file('my_file.txt')
+        my_file = root_folder.create_file('my_file.py')
         my_file.remove()
-        self.assertFalse(root_folder.has_child('my_file.txt'))
+        self.assertFalse(root_folder.has_child('my_file.py'))
 
     def test_removing_directories(self):
         self.assertTrue(os.path.exists(os.path.join(self.project.address,
@@ -152,10 +152,10 @@ class ProjectTest(unittest.TestCase):
 
     def test_removing_non_existent_files(self):
         with self.assertRaises(ResourceNotFoundError):
-            self.project.get_resource('NonExistentFile.txt').remove()
+            self.project.get_resource('NonExistentFile.py').remove()
 
     def test_removing_nested_files(self):
-        file_name = self.sample_folder + '/sample_file.txt'
+        file_name = self.sample_folder + '/sample_file.py'
         self.project.root.create_file(file_name)
         self.project.get_resource(file_name).remove()
         self.assertTrue(os.path.exists(os.path.join(self.project.address,
@@ -166,7 +166,7 @@ class ProjectTest(unittest.TestCase):
     def test_file_get_name(self):
         file = self.project.get_resource(self.sample_file)
         self.assertEquals(self.sample_file, file.name)
-        file_name = 'nestedFile.txt'
+        file_name = 'nestedFile.py'
         parent = self.project.get_resource(self.sample_folder)
         filePath = self.sample_folder + '/' + file_name
         parent.create_file(file_name)
@@ -180,7 +180,7 @@ class ProjectTest(unittest.TestCase):
     def test_file_get_path(self):
         file = self.project.get_resource(self.sample_file)
         self.assertEquals(self.sample_file, file.path)
-        fileName = 'nestedFile.txt'
+        fileName = 'nestedFile.py'
         parent = self.project.get_resource(self.sample_folder)
         filePath = self.sample_folder + '/' + fileName
         parent.create_file(fileName)
@@ -202,7 +202,7 @@ class ProjectTest(unittest.TestCase):
         self.assertEquals([], children)
 
     def test_nonempty_get_children(self):
-        file_name = 'nestedfile.txt'
+        file_name = 'nestedfile.py'
         filePath = self.sample_folder + '/' + file_name
         parent = self.project.get_resource(self.sample_folder)
         parent.create_file(file_name)
@@ -211,8 +211,8 @@ class ProjectTest(unittest.TestCase):
         self.assertEquals(filePath, children[0].path)
 
     def test_nonempty_get_children2(self):
-        file_name = 'nestedfile.txt'
-        folder_name = 'nestedfolder.txt'
+        file_name = 'nestedfile.py'
+        folder_name = 'nestedfolder.py'
         filePath = self.sample_folder + '/' + file_name
         folderPath = self.sample_folder + '/' + folder_name
         parent = self.project.get_resource(self.sample_folder)
@@ -251,11 +251,11 @@ class ProjectTest(unittest.TestCase):
 
     def test_nested_folder_get_files(self):
         parent = self.project.root.create_folder('top')
-        parent.create_file('file1.txt')
-        parent.create_file('file2.txt')
+        parent.create_file('file1.py')
+        parent.create_file('file2.py')
         files = parent.get_files()
         self.assertEquals(2, len(files))
-        self.assertTrue(self.project.get_resource('top/file2.txt') in files)
+        self.assertTrue(self.project.get_resource('top/file2.py') in files)
         self.assertEquals(0, len(parent.get_folders()))
 
     def test_nested_folder_get_folders(self):
@@ -280,15 +280,15 @@ class ProjectTest(unittest.TestCase):
 
     def test_get_all_files_after_changing(self):
         self.assertEquals(1, len(self.project.get_files()))
-        myfile = self.project.root.create_file('myfile.txt')
+        myfile = self.project.root.create_file('myfile.py')
         self.assertEquals(2, len(self.project.get_files()))
-        myfile.move('newfile.txt')
+        myfile.move('newfile.py')
         self.assertEquals(2, len(self.project.get_files()))
-        self.project.get_file('newfile.txt').remove()
+        self.project.get_file('newfile.py').remove()
         self.assertEquals(1, len(self.project.get_files()))
 
     def test_multifile_get_all_files(self):
-        fileName = 'nestedFile.txt'
+        fileName = 'nestedFile.py'
         parent = self.project.get_resource(self.sample_folder)
         parent.create_file(fileName)
         files = list(self.project.get_files())
@@ -305,13 +305,13 @@ class ProjectTest(unittest.TestCase):
             self.assertNotEquals('src/test.pyc', x.path)
 
     def test_folder_creating_files(self):
-        projectFile = 'NewFile.txt'
+        projectFile = 'NewFile.py'
         self.project.root.create_file(projectFile)
         new_file = self.project.get_resource(projectFile)
         self.assertTrue(new_file is not None and not new_file.is_folder())
 
     def test_folder_creating_nested_files(self):
-        project_file = 'NewFile.txt'
+        project_file = 'NewFile.py'
         parent_folder = self.project.get_resource(self.sample_folder)
         parent_folder.create_file(project_file)
         new_file = self.project.get_resource(self.sample_folder
@@ -334,20 +334,20 @@ class ProjectTest(unittest.TestCase):
 
     def test_folder_get_child(self):
         folder = self.project.root
-        folder.create_file('myfile.txt')
+        folder.create_file('myfile.py')
         folder.create_folder('myfolder')
-        self.assertEquals(self.project.get_resource('myfile.txt'),
-                          folder.get_child('myfile.txt'))
+        self.assertEquals(self.project.get_resource('myfile.py'),
+                          folder.get_child('myfile.py'))
         self.assertEquals(self.project.get_resource('myfolder'),
                           folder.get_child('myfolder'))
 
     def test_folder_get_child_nested(self):
         root = self.project.root
         folder = root.create_folder('myfolder')
-        folder.create_file('myfile.txt')
+        folder.create_file('myfile.py')
         folder.create_folder('myfolder')
-        self.assertEquals(self.project.get_resource('myfolder/myfile.txt'),
-                          folder.get_child('myfile.txt'))
+        self.assertEquals(self.project.get_resource('myfolder/myfile.py'),
+                          folder.get_child('myfile.py'))
         self.assertEquals(self.project.get_resource('myfolder/myfolder'),
                           folder.get_child('myfolder'))
 
@@ -356,15 +356,15 @@ class ProjectTest(unittest.TestCase):
 
     def test_moving_files(self):
         root_folder = self.project.root
-        my_file = root_folder.create_file('my_file.txt')
-        my_file.move('my_other_file.txt')
+        my_file = root_folder.create_file('my_file.py')
+        my_file.move('my_other_file.py')
         self.assertFalse(my_file.exists())
-        root_folder.get_child('my_other_file.txt')
+        root_folder.get_child('my_other_file.py')
 
     def test_moving_folders(self):
         root_folder = self.project.root
         my_folder = root_folder.create_folder('my_folder')
-        my_file = my_folder.create_file('my_file.txt')
+        my_file = my_folder.create_file('my_file.py')
         my_folder.move('new_folder')
         self.assertFalse(root_folder.has_child('my_folder'))
         self.assertFalse(my_file.exists())
@@ -373,21 +373,21 @@ class ProjectTest(unittest.TestCase):
     def test_moving_destination_folders(self):
         root_folder = self.project.root
         my_folder = root_folder.create_folder('my_folder')
-        my_file = root_folder.create_file('my_file.txt')
+        my_file = root_folder.create_file('my_file.py')
         my_file.move('my_folder')
-        self.assertFalse(root_folder.has_child('my_file.txt'))
+        self.assertFalse(root_folder.has_child('my_file.py'))
         self.assertFalse(my_file.exists())
-        my_folder.get_child('my_file.txt')
+        my_folder.get_child('my_file.py')
 
     def test_moving_files_and_resource_objects(self):
         root_folder = self.project.root
-        my_file = root_folder.create_file('my_file.txt')
+        my_file = root_folder.create_file('my_file.py')
         old_hash = hash(my_file)
-        my_file.move('my_other_file.txt')
+        my_file.move('my_other_file.py')
         self.assertEquals(old_hash, hash(my_file))
 
     def test_file_encoding_reading(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = (b'# -*- coding: utf-8 -*-\n' +
                     b'#\N{LATIN SMALL LETTER I WITH DIAERESIS}\n').decode('utf8')
         file = open(sample_file.real_path, 'wb')
@@ -396,20 +396,20 @@ class ProjectTest(unittest.TestCase):
         self.assertEquals(contents, sample_file.read())
 
     def test_file_encoding_writing(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = (b'# -*- coding: utf-8 -*-\n' +
                     b'\N{LATIN SMALL LETTER I WITH DIAERESIS}\n').decode('utf8')
         sample_file.write(contents)
         self.assertEquals(contents, sample_file.read())
 
     def test_using_utf8_when_writing_in_case_of_errors(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = b'\n\N{LATIN SMALL LETTER I WITH DIAERESIS}\n'.decode('utf8')
         sample_file.write(contents)
         self.assertEquals(contents, sample_file.read())
 
     def test_encoding_declaration_in_the_second_line(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = b'\n# -*- coding: latin-1 -*-\n\xa9\n'
         file = open(sample_file.real_path, 'wb')
         file.write(contents)
@@ -417,7 +417,7 @@ class ProjectTest(unittest.TestCase):
         self.assertEquals(contents, sample_file.read().encode('latin-1'))
 
     def test_read_bytes(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = b'\n# -*- coding: latin-1 -*-\n\xa9\n'
         file = open(sample_file.real_path, 'wb')
         file.write(contents)
@@ -426,7 +426,7 @@ class ProjectTest(unittest.TestCase):
 
     # TODO: Detecting utf-16 encoding
     def xxx_test_using_utf16(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = b'# -*- coding: utf-16 -*-\n# This is a sample file ...\n'
         file = open(sample_file.real_path, 'w')
         file.write(contents.encode('utf-16'))
@@ -436,7 +436,7 @@ class ProjectTest(unittest.TestCase):
 
     # XXX: supporting utf_8_sig
     def xxx_test_file_encoding_reading_for_notepad_styles(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         contents = u'#\N{LATIN SMALL LETTER I WITH DIAERESIS}\n'
         file = open(sample_file.real_path, 'w')
         # file.write('\xef\xbb\xbf')
@@ -449,7 +449,7 @@ class ProjectTest(unittest.TestCase):
         self.assertTrue(myfile.exists())
 
     def test_using_file_create(self):
-        myfile = self.project.get_file('myfile.txt')
+        myfile = self.project.get_file('myfile.py')
         self.assertFalse(myfile.exists())
         myfile.create()
         self.assertTrue(myfile.exists())
@@ -464,17 +464,17 @@ class ProjectTest(unittest.TestCase):
 
     def test_exception_when_creating_twice(self):
         with self.assertRaises(RopeError):
-            myfile = self.project.get_file('myfile.txt')
+            myfile = self.project.get_file('myfile.py')
             myfile.create()
             myfile.create()
 
     def test_exception_when_parent_does_not_exist(self):
         with self.assertRaises(ResourceNotFoundError):
-            myfile = self.project.get_file('myfolder/myfile.txt')
+            myfile = self.project.get_file('myfolder/myfile.py')
             myfile.create()
 
     def test_simple_path_to_resource(self):
-        myfile = self.project.root.create_file('myfile.txt')
+        myfile = self.project.root.create_file('myfile.py')
         self.assertEquals(myfile, path_to_resource(self.project,
                                                    myfile.real_path))
         self.assertEquals(myfile, path_to_resource(
@@ -490,7 +490,7 @@ class ProjectTest(unittest.TestCase):
         project2 = testutils.sample_project(folder_name='sampleproject2')
         mod = project2.root.create_file('mod.py')
         try:
-            path = os.path.join(self.project.address, 'linkedfile.txt')
+            path = os.path.join(self.project.address, 'linkedfile.py')
             os.symlink(mod.real_path, path)
             files = self.project.root.get_files()
             self.assertEquals(1, len(files))
@@ -498,7 +498,7 @@ class ProjectTest(unittest.TestCase):
             testutils.remove_project(project2)
 
     def test_getting_empty_source_folders(self):
-        self.assertEquals([], self.project.get_source_folders())
+        self.assertEquals([self.project.root], self.project.get_source_folders())
 
     def test_root_source_folder(self):
         self.project.root.create_file('sample.py')
@@ -517,7 +517,7 @@ class ProjectTest(unittest.TestCase):
         src = self.project.root.create_folder('src')
         src.create_file('sample.py')
         source_folders = self.project.get_source_folders()
-        self.assertEquals(1, len(source_folders))
+        self.assertEquals(2, len(source_folders))
         self.assertTrue(self.project.get_resource('src') in source_folders)
 
     def test_packages(self):
@@ -525,7 +525,7 @@ class ProjectTest(unittest.TestCase):
         pkg = src.create_folder('package')
         pkg.create_file('__init__.py')
         source_folders = self.project.get_source_folders()
-        self.assertEquals(1, len(source_folders))
+        self.assertEquals(2, len(source_folders))
         self.assertTrue(src in source_folders)
 
     def test_multi_source_folders(self):
@@ -535,7 +535,7 @@ class ProjectTest(unittest.TestCase):
         test = self.project.root.create_folder('test')
         test.create_file('alltests.py')
         source_folders = self.project.get_source_folders()
-        self.assertEquals(2, len(source_folders))
+        self.assertEquals(3, len(source_folders))
         self.assertTrue(src in source_folders)
         self.assertTrue(test in source_folders)
 
@@ -561,7 +561,7 @@ class ResourceObserverTest(unittest.TestCase):
         super(ResourceObserverTest, self).tearDown()
 
     def test_resource_change_observer(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         sample_file.write('a sample file version 1')
         sample_observer = _SampleObserver()
         self.project.add_observer(sample_observer)
@@ -570,7 +570,7 @@ class ResourceObserverTest(unittest.TestCase):
         self.assertEquals(sample_file, sample_observer.last_changed)
 
     def test_resource_change_observer_after_removal(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         sample_file.write('text')
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
@@ -580,7 +580,7 @@ class ResourceObserverTest(unittest.TestCase):
         self.assertEquals(sample_file, sample_observer.last_removed)
 
     def test_resource_change_observer2(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(sample_observer)
         self.project.remove_observer(sample_observer)
@@ -596,28 +596,28 @@ class ResourceObserverTest(unittest.TestCase):
             FilteredResourceObserver(my_folder_observer, [my_folder]))
         self.project.add_observer(
             FilteredResourceObserver(root_folder_observer, [root_folder]))
-        my_file = my_folder.create_file('my_file.txt')
+        my_file = my_folder.create_file('my_file.py')
         self.assertEquals(1, my_folder_observer.change_count)
-        my_file.move('another_file.txt')
+        my_file.move('another_file.py')
         self.assertEquals(2, my_folder_observer.change_count)
         self.assertEquals(1, root_folder_observer.change_count)
-        self.project.get_resource('another_file.txt').remove()
+        self.project.get_resource('another_file.py').remove()
         self.assertEquals(2, my_folder_observer.change_count)
         self.assertEquals(2, root_folder_observer.change_count)
 
     def test_resource_change_observer_after_moving(self):
-        sample_file = self.project.root.create_file('my_file.txt')
+        sample_file = self.project.root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(sample_observer)
-        sample_file.move('new_file.txt')
+        sample_file.move('new_file.py')
         self.assertEquals(1, sample_observer.change_count)
         self.assertEquals((sample_file,
-                          self.project.get_resource('new_file.txt')),
+                          self.project.get_resource('new_file.py')),
                           sample_observer.last_moved)
 
     def test_revalidating_files(self):
         root = self.project.root
-        my_file = root.create_file('my_file.txt')
+        my_file = root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
                                                            [my_file]))
@@ -628,7 +628,7 @@ class ResourceObserverTest(unittest.TestCase):
 
     def test_revalidating_files_and_no_changes2(self):
         root = self.project.root
-        my_file = root.create_file('my_file.txt')
+        my_file = root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
                                                            [my_file]))
@@ -639,7 +639,7 @@ class ResourceObserverTest(unittest.TestCase):
     def test_revalidating_folders(self):
         root = self.project.root
         my_folder = root.create_folder('myfolder')
-        my_file = my_folder.create_file('myfile.txt')  # noqa
+        my_file = my_folder.create_file('myfile.py')  # noqa
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
                                                            [my_folder]))
@@ -649,7 +649,7 @@ class ResourceObserverTest(unittest.TestCase):
         self.assertEquals(1, sample_observer.change_count)
 
     def test_removing_and_adding_resources_to_filtered_observer(self):
-        my_file = self.project.root.create_file('my_file.txt')
+        my_file = self.project.root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         filtered_observer = FilteredResourceObserver(sample_observer)
         self.project.add_observer(filtered_observer)
@@ -663,7 +663,7 @@ class ResourceObserverTest(unittest.TestCase):
         self.assertEquals(1, sample_observer.change_count)
 
     def test_validation_and_changing_files(self):
-        my_file = self.project.root.create_file('my_file.txt')
+        my_file = self.project.root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         timekeeper = _MockChangeIndicator()
         filtered_observer = FilteredResourceObserver(
@@ -675,7 +675,7 @@ class ResourceObserverTest(unittest.TestCase):
         self.assertEquals(1, sample_observer.change_count)
 
     def test_validation_and_changing_files2(self):
-        my_file = self.project.root.create_file('my_file.txt')
+        my_file = self.project.root.create_file('my_file.py')
         sample_observer = _SampleObserver()
         timekeeper = _MockChangeIndicator()
         self.project.add_observer(FilteredResourceObserver(
@@ -689,8 +689,8 @@ class ResourceObserverTest(unittest.TestCase):
 
     def test_not_reporting_multiple_changes_to_folders(self):
         root = self.project.root
-        file1 = root.create_file('file1.txt')
-        file2 = root.create_file('file2.txt')
+        file1 = root.create_file('file1.py')
+        file2 = root.create_file('file2.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(
                                   sample_observer, [root, file1, file2]))
@@ -707,7 +707,7 @@ class ResourceObserverTest(unittest.TestCase):
 
     def test_moving_and_being_interested_about_a_folder_and_a_child(self):
         my_folder = self.project.root.create_folder('my_folder')
-        my_file = my_folder.create_file('my_file.txt')
+        my_file = my_folder.create_file('my_file.py')
         sample_observer = _SampleObserver()
         filtered_observer = FilteredResourceObserver(
             sample_observer, [my_folder, my_file])
@@ -722,7 +722,7 @@ class ResourceObserverTest(unittest.TestCase):
 
     def test_validating_when_created(self):
         root = self.project.root
-        my_file = self.project.get_file('my_file.txt')
+        my_file = self.project.get_file('my_file.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
                                                            [my_file]))
@@ -733,7 +733,7 @@ class ResourceObserverTest(unittest.TestCase):
 
     def test_validating_twice_when_created(self):
         root = self.project.root
-        my_file = self.project.get_file('my_file.txt')
+        my_file = self.project.get_file('my_file.py')
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
                                                            [my_file]))
@@ -745,8 +745,8 @@ class ResourceObserverTest(unittest.TestCase):
 
     def test_changes_and_adding_resources(self):
         root = self.project.root  # noqa
-        file1 = self.project.get_file('file1.txt')
-        file2 = self.project.get_file('file2.txt')
+        file1 = self.project.get_file('file1.py')
+        file2 = self.project.get_file('file2.py')
         file1.create()
         sample_observer = _SampleObserver()
         self.project.add_observer(FilteredResourceObserver(sample_observer,
@@ -759,13 +759,13 @@ class ResourceObserverTest(unittest.TestCase):
     def test_validating_get_files_list(self):
         root = self.project.root  # noqa
         self.assertEquals(0, len(self.project.get_files()))
-        file = open(os.path.join(self.project.address, 'myfile.txt'), 'w')
+        file = open(os.path.join(self.project.address, 'myfile.py'), 'w')
         file.close()
         self.project.validate()
         self.assertEquals(1, len(self.project.get_files()))
 
     def test_clear_observered_resources_for_filtered_observers(self):
-        sample_file = self.project.root.create_file('myfile.txt')
+        sample_file = self.project.root.create_file('myfile.py')
         sample_observer = _SampleObserver()
         filtered = FilteredResourceObserver(sample_observer)
         self.project.add_observer(filtered)
@@ -829,7 +829,7 @@ class OutOfProjectTest(unittest.TestCase):
         super(OutOfProjectTest, self).tearDown()
 
     def test_simple_out_of_project_file(self):
-        sample_file_path = os.path.join(self.test_directory, 'sample.txt')
+        sample_file_path = os.path.join(self.test_directory, 'sample.py')
         sample_file = open(sample_file_path, 'w')
         sample_file.write('sample content\n')
         sample_file.close()
@@ -842,13 +842,13 @@ class OutOfProjectTest(unittest.TestCase):
         sample_folder = self.no_project.get_resource(sample_folder_path)
         self.assertEquals([], sample_folder.get_children())
 
-        sample_file_path = os.path.join(sample_folder_path, 'sample.txt')
+        sample_file_path = os.path.join(sample_folder_path, 'sample.py')
         open(sample_file_path, 'w').close()
         sample_resource = self.no_project.get_resource(sample_file_path)
         self.assertEquals(sample_resource, sample_folder.get_children()[0])
 
     def test_using_absolute_path(self):
-        sample_file_path = os.path.join(self.test_directory, 'sample.txt')
+        sample_file_path = os.path.join(self.test_directory, 'sample.py')
         open(sample_file_path, 'w').close()
         normal_sample_resource = self.no_project.get_resource(sample_file_path)
         absolute_sample_resource = \
@@ -861,16 +861,16 @@ class OutOfProjectTest(unittest.TestCase):
         sample_folder = self.no_project.get_resource(sample_folder_path)
         self.assertEquals([], sample_folder.get_children())
 
-        sample_file_path = os.path.join(sample_folder_path, 'sample.txt')
+        sample_file_path = os.path.join(sample_folder_path, 'sample.py')
         open(sample_file_path, 'w').close()
         sample_resource = self.no_project.get_resource(sample_file_path)
-        self.assertTrue(sample_folder.has_child('sample.txt'))
-        self.assertFalse(sample_folder.has_child('doesnothave.txt'))
+        self.assertTrue(sample_folder.has_child('sample.py'))
+        self.assertFalse(sample_folder.has_child('doesnothave.py'))
         self.assertEquals(sample_resource,
-                          sample_folder.get_child('sample.txt'))
+                          sample_folder.get_child('sample.py'))
 
     def test_out_of_project_files_and_path_to_resource(self):
-        sample_file_path = os.path.join(self.test_directory, 'sample.txt')
+        sample_file_path = os.path.join(self.test_directory, 'sample.py')
         sample_file = open(sample_file_path, 'w')
         sample_file.write('sample content\n')
         sample_file.close()
@@ -923,9 +923,9 @@ class RopeFolderTest(unittest.TestCase):
 
     def test_setting_ignored_resources(self):
         self.project = testutils.sample_project(
-            ignored_resources=['myfile.txt'])
-        myfile = self.project.get_file('myfile.txt')
-        file2 = self.project.get_file('file2.txt')
+            ignored_resources=['myfile.py'])
+        myfile = self.project.get_file('myfile.py')
+        file2 = self.project.get_file('file2.py')
         self.assertTrue(self.project.is_ignored(myfile))
         self.assertFalse(self.project.is_ignored(file2))
 
@@ -933,42 +933,42 @@ class RopeFolderTest(unittest.TestCase):
         self.project = testutils.sample_project(ignored_resources=['myfolder'])
         myfolder = self.project.root.create_folder('myfolder')
         self.assertTrue(self.project.is_ignored(myfolder))
-        myfile = myfolder.create_file('myfile.txt')
+        myfile = myfolder.create_file('myfile.py')
         self.assertTrue(self.project.is_ignored(myfile))
 
     def test_ignored_resources_and_get_files(self):
         self.project = testutils.sample_project(
-            ignored_resources=['myfile.txt'], ropefolder=None)
-        myfile = self.project.get_file('myfile.txt')
+            ignored_resources=['myfile.py'], ropefolder=None)
+        myfile = self.project.get_file('myfile.py')
         self.assertEquals(0, len(self.project.get_files()))
         myfile.create()
         self.assertEquals(0, len(self.project.get_files()))
 
     def test_ignored_resources_and_get_files2(self):
         self.project = testutils.sample_project(
-            ignored_resources=['myfile.txt'], ropefolder=None)
-        myfile = self.project.root.create_file('myfile.txt')  # noqa
+            ignored_resources=['myfile.py'], ropefolder=None)
+        myfile = self.project.root.create_file('myfile.py')  # noqa
         self.assertEquals(0, len(self.project.get_files()))
 
     def test_setting_ignored_resources_patterns(self):
         self.project = testutils.sample_project(ignored_resources=['m?file.*'])
-        myfile = self.project.get_file('myfile.txt')
-        file2 = self.project.get_file('file2.txt')
+        myfile = self.project.get_file('myfile.py')
+        file2 = self.project.get_file('file2.py')
         self.assertTrue(self.project.is_ignored(myfile))
         self.assertFalse(self.project.is_ignored(file2))
 
     def test_star_should_not_include_slashes(self):
-        self.project = testutils.sample_project(ignored_resources=['f*.txt'])
+        self.project = testutils.sample_project(ignored_resources=['f*.py'])
         folder = self.project.root.create_folder('folder')
-        file1 = folder.create_file('myfile.txt')
-        file2 = folder.create_file('file2.txt')
+        file1 = folder.create_file('myfile.py')
+        file2 = folder.create_file('file2.py')
         self.assertFalse(self.project.is_ignored(file1))
         self.assertTrue(self.project.is_ignored(file2))
 
     def test_normal_fscommands(self):
         fscommands = _MockFSCommands()
         self.project = testutils.sample_project(fscommands=fscommands)
-        myfile = self.project.get_file('myfile.txt')
+        myfile = self.project.get_file('myfile.py')
         myfile.create()
         self.assertTrue('create_file ', fscommands.log)
 
@@ -976,8 +976,8 @@ class RopeFolderTest(unittest.TestCase):
         fscommands = _MockFSCommands()
         self.project = testutils.sample_project(
             fscommands=fscommands,
-            ignored_resources=['myfile.txt'], ropefolder=None)
-        myfile = self.project.get_file('myfile.txt')
+            ignored_resources=['myfile.py'], ropefolder=None)
+        myfile = self.project.get_file('myfile.py')
         myfile.create()
         self.assertEquals('', fscommands.log)
 
@@ -993,13 +993,13 @@ class RopeFolderTest(unittest.TestCase):
         if not config.exists():
             config.create()
         config.write('def set_prefs(prefs):\n'
-                     '    prefs["ignored_resources"] = ["myfile.txt"]\n'
+                     '    prefs["ignored_resources"] = ["myfile.py"]\n'
                      'def project_opened(project):\n'
                      '    project.root.create_file("loaded")\n')
         self.project.close()
         self.project = Project(self.project.address, ropefolder='.ropeproject')
         self.assertTrue(self.project.get_file('loaded').exists())
-        myfile = self.project.get_file('myfile.txt')
+        myfile = self.project.get_file('myfile.py')
         self.assertTrue(self.project.is_ignored(myfile))
 
     def test_ignoring_syntax_errors(self):

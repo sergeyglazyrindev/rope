@@ -17,6 +17,7 @@ try:
 except NameError:
     unicode = str
 
+
 def create_fscommands(root):
     dirlist = os.listdir(root)
     commands = {'.hg': MercurialCommands,
@@ -56,6 +57,37 @@ class FileSystemCommands(object):
             file_.write(data)
         finally:
             file_.close()
+
+    def does_folder_contain_python_package(self, folder_path):
+        return bool(_execute_and_return_output(['find', './', '-mindepth', '2',
+                                                '-maxdepth', '2', '-type', 'f', '-name', '__init__.py'], cwd=folder_path))
+
+    def does_folder_contain_any_python_file(self, folder_path):
+        return bool(_execute_and_return_output(['find', './', '-maxdepth', '1', '-type', 'f',
+                                                '-name', '*.py'], cwd=folder_path))
+
+    def get_folders_with_python_files(self, folder_path):
+        output = _execute_and_return_output(['find', './', '-mindepth', '2',
+                                             '-type', 'f', '-name', '*.py'], cwd=folder_path)
+        found_files = output.split("\n")
+        found_dirs = []
+        for _file in found_files:
+            if not _file:
+                continue
+            _path_splitted = _file.split(os.sep)
+            found_dirs.append(_path_splitted[1])
+        return list(set(found_dirs))
+
+    def get_python_files_and_folders_only_with_python_files(self, folder_path):
+        output = _execute_and_return_output(['find', './', '-type', 'f', '-name', '*.py'], cwd=folder_path)
+        found_files = output.split("\n")
+        found_resource_paths = []
+        for _file in found_files:
+            if not _file:
+                continue
+            _path_splitted = _file.split(os.sep)
+            found_resource_paths.append(os.sep.join(_path_splitted[1:]))
+        return list(set(found_resource_paths))
 
 
 class SubversionCommands(object):
@@ -191,6 +223,11 @@ def _execute(args, cwd=None):
     process = subprocess.Popen(args, cwd=cwd, stdout=subprocess.PIPE)
     process.wait()
     return process.returncode
+
+
+def _execute_and_return_output(args, cwd=None):
+    output, _ = subprocess.Popen(args, cwd=cwd, stdout=subprocess.PIPE).communicate()
+    return output
 
 
 def unicode_to_file_data(contents, encoding=None):

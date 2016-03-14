@@ -362,11 +362,9 @@ class _FileListCacher(object):
         return self.files
 
     def _add_files(self, folder):
-        for child in folder.get_children():
-            if child.is_folder():
-                self._add_files(child)
-            elif not self.project.is_ignored(child):
-                self.files.add(child)
+        for resource in folder.get_python_files_and_folders_only_with_python_files():
+            if not self.project.is_ignored(resource):
+                self.files.add(resource)
 
     def _changed(self, resource):
         if resource.is_folder():
